@@ -55,7 +55,7 @@ class Jogador {
             const result = await conectaNaDatabase.query(query, [id]);
 
             if (result.rows.length === 0) {
-                return null; // Jogador não encontrado
+                return null;
             }
 
             const jogador = result.rows[0];

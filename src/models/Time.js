@@ -17,35 +17,82 @@ class Time {
         }
     }
 
-    static async buscarTodos() {
-        const query = "SELECT * FROM times ORDER BY id ASC";
-        
+    static async buscarTodosComJogadores() {
+        const query = `
+            SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
+                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero
+            FROM times
+            LEFT JOIN jogadores ON times.nome = jogadores.time
+            ORDER BY times.id, jogadores.id`;
+
         try {
             const result = await conectaNaDatabase.query(query);
-            return result.rows;
+            const timesMap = {};
+            result.rows.forEach(row => {
+                if (!timesMap[row.id]) {
+                    timesMap[row.id] = {
+                        id: row.id,
+                        nome: row.nome,
+                        divisao: row.divisao,
+                        titulos_superbowl: row.titulos_superbowl,
+                        jogadores: []
+                    };
+                }
+
+                if (row.jogador_id) {
+                    timesMap[row.id].jogadores.push({
+                        id: row.jogador_id,
+                        nome: row.jogador_nome,
+                        posicao: row.jogador_posicao,
+                        numero: row.jogador_numero
+                    });
+                }
+            });
+
+            return Object.values(timesMap);
         } catch (error) {
-            console.error("Erro ao buscar times:", error);
+            console.error("Erro ao buscar times com jogadores:", error);
             throw error;
         }
     }
 
     static async buscarPorIdComJogadores(id) {
-        const timeQuery = "SELECT * FROM times WHERE id = $1";
-        const jogadoresQuery = "SELECT * FROM jogadores WHERE time_id = $1";
-        
+        const query = `
+            SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
+                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero
+            FROM times
+            LEFT JOIN jogadores ON times.nome = jogadores.time
+            WHERE times.id = $1`;
+
         try {
-            const timeResult = await conectaNaDatabase.query(timeQuery, [id]);
-            const jogadoresResult = await conectaNaDatabase.query(jogadoresQuery, [id]);
-            
-            if (timeResult.rows.length === 0) {
+            const result = await conectaNaDatabase.query(query, [id]);
+
+            if (result.rows.length === 0) {
                 return null;
             }
 
-            const time = timeResult.rows[0];
-            time.jogadores = jogadoresResult.rows;
+            const time = {
+                id: result.rows[0].id,
+                nome: result.rows[0].nome,
+                divisao: result.rows[0].divisao,
+                titulos_superbowl: result.rows[0].titulos_superbowl,
+                jogadores: []
+            };
+
+            result.rows.forEach(row => {
+                if (row.jogador_id) {
+                    time.jogadores.push({
+                        id: row.jogador_id,
+                        nome: row.jogador_nome,
+                        posicao: row.jogador_posicao,
+                        numero: row.jogador_numero
+                    });
+                }
+            });
+
             return time;
         } catch (error) {
-            console.error("Erro ao buscar time e jogadores:", error);
+            console.error("Erro ao buscar time com jogadores:", error);
             throw error;
         }
     }
@@ -96,7 +143,6 @@ class Time {
             throw error;
         }
     }
-
 }
 
 export default Time;

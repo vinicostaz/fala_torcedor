@@ -3,14 +3,14 @@ import Time from "../models/Time.js";
 class TimeController {
     static async buscarTodos(req, res) {
         try {
-            const times = await Time.buscarTodos();
+            const times = await Time.buscarTodosComJogadores();
             res.status(200).json(times);
         } catch (error) {
-            res.status(500).json({ error: "Erro ao buscar times." });
+            res.status(500).json({ error: "Erro ao buscar times com jogadores." });
         }
     }
 
-    static async buscarPorIdComJogadores(req, res) {
+    static async buscarPorId(req, res) {
         try {
             const time = await Time.buscarPorIdComJogadores(req.params.id);
             if (!time) {
