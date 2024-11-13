@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import jogadoresRoutes from "./routes/jogadoresRoutes.js";
 import timeRoutes from "./routes/timeRoutes.js";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
