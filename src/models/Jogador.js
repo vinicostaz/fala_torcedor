@@ -17,27 +17,63 @@ class Jogador {
         }
     }
 
-    static async buscarTodos() {
-        const query = "SELECT * FROM jogadores ORDER BY id ASC";
-        
+    static async buscarTodosComTime() {
+        const query = `
+            SELECT jogadores.*, times.id AS time_id, times.divisao, times.titulos_superbowl 
+            FROM jogadores
+            LEFT JOIN times ON jogadores.time = times.nome
+            ORDER BY jogadores.id ASC`;
+
         try {
             const result = await conectaNaDatabase.query(query);
-            return result.rows;
+            return result.rows.map(row => ({
+                id: row.id,
+                nome: row.nome,
+                posicao: row.posicao,
+                numero: row.numero,
+                time: {
+                    nome: row.time,
+                    id: row.time_id,
+                    divisao: row.divisao,
+                    titulos_superbowl: row.titulos_superbowl
+                }
+            }));
         } catch (error) {
-            console.error("Erro ao buscar jogadores:", error);
+            console.error("Erro ao buscar jogadores com informações do time:", error);
             throw error;
         }
     }
 
-    static async buscarPorId(id) {
-        const query = "SELECT * FROM jogadores WHERE id = $1";
-        const values = [id];
-        
+    static async buscarPorIdComTime(id) {
+        const query = `
+            SELECT jogadores.*, times.id AS time_id, times.divisao, times.titulos_superbowl 
+            FROM jogadores
+            LEFT JOIN times ON jogadores.time = times.nome
+            WHERE jogadores.id = $1`;
+
         try {
-            const result = await conectaNaDatabase.query(query, values);
-            return result.rows[0];
+            const result = await conectaNaDatabase.query(query, [id]);
+
+            if (result.rows.length === 0) {
+                return null; // Jogador não encontrado
+            }
+
+            const jogador = result.rows[0];
+
+            return {
+                id: jogador.id,
+                nome: jogador.nome,
+                posicao: jogador.posicao,
+                numero: jogador.numero,
+                time: {
+                    nome: jogador.time,
+                    id: jogador.time_id,
+                    divisao: jogador.divisao,
+                    titulos_superbowl: jogador.titulos_superbowl
+                }
+            };
         } catch (error) {
-            console.error("Erro ao buscar jogador por ID:", error);
+            console.error("Erro ao buscar jogador com informações do time:", error);
             throw error;
         }
     }
@@ -75,7 +111,6 @@ class Jogador {
             throw error;
         }
     }
-
 
     static async deletar(id) {
         const query = "DELETE FROM jogadores WHERE id = $1 RETURNING *";

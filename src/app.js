@@ -1,5 +1,6 @@
 import express from "express";
 import jogadoresRoutes from "./routes/jogadoresRoutes.js";
+import timeRoutes from "./routes/timeRoutes.js";
 
 const app = express();
 
@@ -10,5 +11,6 @@ app.get("/", (req, res) => {
 });
 
 app.use(jogadoresRoutes);
+app.use(timeRoutes);
 
 export default app;

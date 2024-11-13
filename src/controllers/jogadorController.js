@@ -3,7 +3,7 @@ import Jogador from "../models/Jogador.js";
 class JogadorController {
     static async buscarTodos(req, res) {
         try {
-            const jogadores = await Jogador.buscarTodos();
+            const jogadores = await Jogador.buscarTodosComTime();
             res.status(200).json(jogadores);
         } catch (err) {
             res.status(500).json({ error: "Erro ao buscar jogadores." });
@@ -12,7 +12,7 @@ class JogadorController {
 
     static async buscarPorId(req, res) {
         try {
-            const jogador = await Jogador.buscarPorId(req.params.id);
+            const jogador = await Jogador.buscarPorIdComTime(req.params.id);
             if (!jogador) {
                 return res.status(404).json({ error: "Jogador não encontrado." });
             }
