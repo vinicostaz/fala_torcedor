@@ -1,12 +1,12 @@
 import conectaNaDatabase from '../config/dbConnect.js';
 
 class Jogador {
-    static async criar({ nome, posicao, time, numero }) {
+    static async criar({ nome, posicao, time, numero, foto_url }) {
         const query = `
-            INSERT INTO jogadores (nome, posicao, time, numero) 
-            VALUES ($1, $2, $3, $4) 
+            INSERT INTO jogadores (nome, posicao, time, numero, foto_url) 
+            VALUES ($1, $2, $3, $4, $5) 
             RETURNING *`;
-        const values = [nome, posicao, time, numero];
+        const values = [nome, posicao, time, numero, foto_url];
         
         try {
             const result = await conectaNaDatabase.query(query, values);
@@ -19,7 +19,9 @@ class Jogador {
 
     static async buscarTodosComTime() {
         const query = `
-            SELECT jogadores.*, times.id AS time_id, times.divisao, times.titulos_superbowl 
+            SELECT jogadores.*, times.id AS time_id, times.nome AS time_nome, 
+                   times.divisao AS time_divisao, times.titulos_superbowl AS time_titulos_superbowl, 
+                   times.foto_url AS time_foto_url
             FROM jogadores
             LEFT JOIN times ON jogadores.time = times.nome
             ORDER BY jogadores.id ASC`;
@@ -31,11 +33,13 @@ class Jogador {
                 nome: row.nome,
                 posicao: row.posicao,
                 numero: row.numero,
+                foto_url: row.foto_url,
                 time: {
-                    nome: row.time,
                     id: row.time_id,
-                    divisao: row.divisao,
-                    titulos_superbowl: row.titulos_superbowl
+                    nome: row.time_nome,
+                    divisao: row.time_divisao,
+                    titulos_superbowl: row.time_titulos_superbowl,
+                    foto_url: row.time_foto_url
                 }
             }));
         } catch (error) {
@@ -46,11 +50,12 @@ class Jogador {
 
     static async buscarPorIdComTime(id) {
         const query = `
-            SELECT jogadores.*, times.id AS time_id, times.divisao, times.titulos_superbowl 
+            SELECT jogadores.*, times.id AS time_id, times.nome AS time_nome, 
+                   times.divisao AS time_divisao, times.titulos_superbowl AS time_titulos_superbowl, 
+                   times.foto_url AS time_foto_url
             FROM jogadores
             LEFT JOIN times ON jogadores.time = times.nome
             WHERE jogadores.id = $1`;
-
         try {
             const result = await conectaNaDatabase.query(query, [id]);
 
@@ -65,11 +70,13 @@ class Jogador {
                 nome: jogador.nome,
                 posicao: jogador.posicao,
                 numero: jogador.numero,
+                foto_url: jogador.foto_url,
                 time: {
-                    nome: jogador.time,
                     id: jogador.time_id,
-                    divisao: jogador.divisao,
-                    titulos_superbowl: jogador.titulos_superbowl
+                    nome: jogador.time_nome,
+                    divisao: jogador.time_divisao,
+                    titulos_superbowl: jogador.time_titulos_superbowl,
+                    foto_url: jogador.time_foto_url
                 }
             };
         } catch (error) {
@@ -90,7 +97,7 @@ class Jogador {
                 index++;
             }
         }
-
+ 
         if (setClause.length === 0) {
             throw new Error("Nenhum campo para atualizar");
         }

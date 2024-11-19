@@ -24,15 +24,14 @@ class JogadorController {
 
     static async criar(req, res) {
         try {
-            const { nome, posicao, time, numero } = req.body;
-            const novoJogador = { nome, posicao, time, numero };
+            const { nome, posicao, time, numero, foto_url } = req.body;
+            const novoJogador = { nome, posicao, time, numero, foto_url };
             const jogador = await Jogador.criar(novoJogador);
             res.status(201).json({ message: "Jogador cadastrado com sucesso!", jogador });
         } catch (err) {
             res.status(500).json({ error: "Erro ao cadastrar jogador." });
         }
     }
-
 
     static async atualizar(req, res) {
         try {

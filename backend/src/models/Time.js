@@ -1,13 +1,13 @@
 import conectaNaDatabase from '../config/dbConnect.js';
 
 class Time {
-    static async criar({ nome, divisao, titulos_superbowl }) {
+    static async criar({ nome, divisao, titulos_superbowl, foto_url }) {
         const query = `
-            INSERT INTO times (nome, divisao, titulos_superbowl) 
-            VALUES ($1, $2, $3) 
+            INSERT INTO times (nome, divisao, titulos_superbowl, foto_url) 
+            VALUES ($1, $2, $3, $4) 
             RETURNING *`;
-        const values = [nome, divisao, titulos_superbowl];
-        
+        const values = [nome, divisao, titulos_superbowl, foto_url];
+
         try {
             const result = await conectaNaDatabase.query(query, values);
             return result.rows[0];
@@ -20,11 +20,12 @@ class Time {
     static async buscarTodosComJogadores() {
         const query = `
             SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
-                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero
+                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero, 
+                   jogadores.foto_url AS jogador_foto_url
             FROM times
             LEFT JOIN jogadores ON times.nome = jogadores.time
             ORDER BY times.id, jogadores.id`;
-
+    
         try {
             const result = await conectaNaDatabase.query(query);
             const timesMap = {};
@@ -35,31 +36,33 @@ class Time {
                         nome: row.nome,
                         divisao: row.divisao,
                         titulos_superbowl: row.titulos_superbowl,
+                        foto_url: row.foto_url,
                         jogadores: []
                     };
                 }
-
+    
                 if (row.jogador_id) {
                     timesMap[row.id].jogadores.push({
                         id: row.jogador_id,
                         nome: row.jogador_nome,
                         posicao: row.jogador_posicao,
-                        numero: row.jogador_numero
+                        numero: row.jogador_numero,
+                        foto_url: row.jogador_foto_url
                     });
                 }
             });
-
             return Object.values(timesMap);
         } catch (error) {
             console.error("Erro ao buscar times com jogadores:", error);
             throw error;
         }
-    }
+    }    
 
     static async buscarPorIdComJogadores(id) {
         const query = `
             SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
-                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero
+                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero, 
+                   jogadores.foto_url AS jogador_foto_url
             FROM times
             LEFT JOIN jogadores ON times.nome = jogadores.time
             WHERE times.id = $1`;
@@ -76,6 +79,7 @@ class Time {
                 nome: result.rows[0].nome,
                 divisao: result.rows[0].divisao,
                 titulos_superbowl: result.rows[0].titulos_superbowl,
+                foto_url: result.rows[0].foto_url,
                 jogadores: []
             };
 
@@ -85,7 +89,8 @@ class Time {
                         id: row.jogador_id,
                         nome: row.jogador_nome,
                         posicao: row.jogador_posicao,
-                        numero: row.jogador_numero
+                        numero: row.jogador_numero,
+                        foto_url: row.jogador_foto_url
                     });
                 }
             });
@@ -134,7 +139,7 @@ class Time {
     static async deletar(id) {
         const query = "DELETE FROM times WHERE id = $1 RETURNING *";
         const values = [id];
-        
+
         try {
             const result = await conectaNaDatabase.query(query, values);
             return result.rows[0];

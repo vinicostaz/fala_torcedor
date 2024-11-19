@@ -24,15 +24,15 @@ class TimeController {
 
     static async criar(req, res) {
         try {
-            const { nome, divisao, titulos_superbowl } = req.body;
-            const novoTime = { nome, divisao, titulos_superbowl };
+            const { nome, divisao, titulos_superbowl, foto_url } = req.body;
+            const novoTime = { nome, divisao, titulos_superbowl, foto_url };
             const time = await Time.criar(novoTime);
             res.status(201).json({ message: "Time criado com sucesso!", time });
         } catch (error) {
             res.status(500).json({ error: "Erro ao criar time." });
         }
     }
-
+    
     static async atualizar(req, res) {
         try {
             const fieldsToUpdate = req.body;
