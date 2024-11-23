@@ -7,7 +7,8 @@ const ManageTimes = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:3000/times')
+    axios
+      .get('http://localhost:3000/times')
       .then((response) => setTimes(response.data))
       .catch((error) => console.error('Erro ao buscar times:', error));
   }, []);
@@ -28,10 +29,7 @@ const ManageTimes = () => {
 
   return (
     <div style={containerStyle}>
-      <button
-        onClick={() => navigate('/admin')}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate('/admin')} style={backButtonStyle}>
         Voltar para o Painel Administrativo
       </button>
       <h1 style={headerStyle}>Gerenciar Times</h1>
@@ -40,10 +38,7 @@ const ManageTimes = () => {
           <div key={time.id} style={rowStyle}>
             <p style={{ margin: 0 }}>{time.nome}</p>
             <div style={buttonContainerStyle}>
-              <button
-                style={buttonStyle}
-                onClick={() => navigate(`/update-time/${time.id}`)}
-              >
+              <button style={buttonStyle} onClick={() => navigate(`/update-time/${time.id}`)}>
                 Atualizar
               </button>
               <button
@@ -56,10 +51,7 @@ const ManageTimes = () => {
           </div>
         ))}
       </div>
-      <button
-        style={createButtonStyle}
-        onClick={() => navigate('/create-time')}
-      >
+      <button style={createButtonStyle} onClick={() => navigate('/create-time')}>
         Criar Novo Time
       </button>
     </div>

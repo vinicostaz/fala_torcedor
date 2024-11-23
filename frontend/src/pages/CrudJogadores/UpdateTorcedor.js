@@ -2,87 +2,77 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const UpdateJogador = () => {
+const UpdateTorcedor = () => {
   const { id } = useParams();
-  const [jogadorData, setJogadorData] = useState({
+  const [torcedorData, setTorcedorData] = useState({
     nome: '',
-    posicao: '',
     time: '', // Nome do time
-    numero: '',
+    data_nascimento: '',
     foto_url: '',
   });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchJogadorData = async () => {
+    const fetchTorcedorData = async () => {
       try {
-        const jogadorResponse = await axios.get(`http://localhost:3000/jogadores/${id}`);
+        const torcedorResponse = await axios.get(`http://localhost:3000/torcedores/${id}`);
 
-        setJogadorData({
-          nome: jogadorResponse.data.nome,
-          posicao: jogadorResponse.data.posicao,
-          time: jogadorResponse.data.time?.nome || '', // Nome do time
-          numero: jogadorResponse.data.numero,
-          foto_url: jogadorResponse.data.foto_url,
+        setTorcedorData({
+          nome: torcedorResponse.data.nome,
+          time: torcedorResponse.data.time?.nome || '', // Nome do time
+          data_nascimento: formatDateForInput(torcedorResponse.data.data_nascimento),
+          foto_url: torcedorResponse.data.foto_url,
         });
       } catch (error) {
-        console.error('Erro ao buscar jogador:', error);
-        alert('Erro ao carregar informações do jogador.');
+        console.error('Erro ao buscar torcedor:', error);
+        alert('Erro ao carregar informações do torcedor.');
       }
     };
 
-    fetchJogadorData();
+    fetchTorcedorData();
   }, [id]);
+
+  const formatDateForInput = (dateString) => {
+    // Supondo que a data vem no formato DD/MM/YYYY
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month}-${day}`; // Retorna no formato YYYY-MM-DD
+  };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       const payload = {
-        ...jogadorData,
-        time: jogadorData.time.trim(), // Enviar o nome do time
+        ...torcedorData,
+        time: torcedorData.time.trim(), // Enviar o nome do time
       };
 
-      await axios.put(`http://localhost:3000/jogadores/${id}`, payload);
-      alert('Jogador atualizado com sucesso.');
-      navigate('/crud/jogador');
+      await axios.put(`http://localhost:3000/torcedores/${id}`, payload);
+      alert('Torcedor atualizado com sucesso.');
+      navigate('/crud/torcedor');
     } catch (error) {
-      console.error('Erro ao atualizar jogador:', error);
-      alert('Erro ao atualizar jogador.');
+      console.error('Erro ao atualizar torcedor:', error);
+      alert('Erro ao atualizar torcedor.');
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setJogadorData((prevData) => ({ ...prevData, [name]: value }));
+    setTorcedorData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   return (
     <div style={{ marginTop: '30px' }}>
-      <button
-        onClick={() => navigate(-1)}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate(-1)} style={backButtonStyle}>
         Voltar
       </button>
       <form onSubmit={handleUpdate} style={formStyle}>
-        <h1>Atualizar Jogador</h1>
+        <h1>Atualizar Torcedor</h1>
         <label style={labelStyle}>
           Nome:
           <input
             type="text"
             name="nome"
-            value={jogadorData.nome}
-            onChange={handleChange}
-            style={inputStyle}
-            required
-          />
-        </label>
-        <label style={labelStyle}>
-          Posição:
-          <input
-            type="text"
-            name="posicao"
-            value={jogadorData.posicao}
+            value={torcedorData.nome}
             onChange={handleChange}
             style={inputStyle}
             required
@@ -93,18 +83,18 @@ const UpdateJogador = () => {
           <input
             type="text"
             name="time"
-            value={jogadorData.time}
+            value={torcedorData.time}
             onChange={handleChange}
             style={inputStyle}
             required
           />
         </label>
         <label style={labelStyle}>
-          Número:
+          Data de Nascimento (Mês/Dia/Ano):
           <input
-            type="number"
-            name="numero"
-            value={jogadorData.numero}
+            type="date"
+            name="data_nascimento"
+            value={torcedorData.data_nascimento}
             onChange={handleChange}
             style={inputStyle}
             required
@@ -115,13 +105,15 @@ const UpdateJogador = () => {
           <input
             type="text"
             name="foto_url"
-            value={jogadorData.foto_url}
+            value={torcedorData.foto_url}
             onChange={handleChange}
             style={inputStyle}
             required
           />
         </label>
-        <button type="submit" style={buttonStyle}>Atualizar</button>
+        <button type="submit" style={buttonStyle}>
+          Atualizar
+        </button>
       </form>
     </div>
   );
@@ -170,4 +162,4 @@ const backButtonStyle = {
   marginLeft: '20px',
 };
 
-export default UpdateJogador;
+export default UpdateTorcedor;

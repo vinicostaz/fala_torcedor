@@ -2,53 +2,51 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const ManageJogadores = () => {
-  const [jogadores, setJogadores] = useState([]);
+const ManageTorcedores = () => {
+  const [torcedores, setTorcedores] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:3000/jogadores')
-      .then((response) => setJogadores(response.data))
-      .catch((error) => console.error('Erro ao buscar jogadores:', error));
+    axios
+      .get('http://localhost:3000/torcedores')
+      .then((response) => setTorcedores(response.data))
+      .catch((error) => console.error('Erro ao buscar torcedores:', error));
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Tem certeza que deseja deletar este jogador?');
+    const confirmDelete = window.confirm('Tem certeza que deseja deletar este torcedor?');
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:3000/jogadores/${id}`);
-        setJogadores(jogadores.filter((jogador) => jogador.id !== id));
-        alert('Jogador deletado com sucesso.');
+        await axios.delete(`http://localhost:3000/torcedores/${id}`);
+        setTorcedores(torcedores.filter((torcedor) => torcedor.id !== id));
+        alert('Torcedor deletado com sucesso.');
       } catch (error) {
-        console.error('Erro ao deletar jogador:', error);
-        alert('Erro ao deletar jogador.');
+        console.error('Erro ao deletar torcedor:', error);
+        alert('Erro ao deletar torcedor.');
       }
     }
   };
 
   return (
     <div style={containerStyle}>
-      <button
-        onClick={() => navigate('/admin')}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate('/admin')} style={backButtonStyle}>
         Voltar para o Painel Administrativo
       </button>
-      <h1 style={headerStyle}>Gerenciar Jogadores</h1>
+      <h1 style={headerStyle}>Gerenciar Torcedores</h1>
       <div style={tableStyle}>
-        {jogadores.map((jogador) => (
-          <div key={jogador.id} style={rowStyle}>
-            <p style={{ margin: 0 }}>{jogador.nome}</p>
+        {torcedores.map((torcedor) => (
+          <div key={torcedor.id} style={rowStyle}>
+            <p style={{ margin: 0 }}>{torcedor.nome}</p>
             <div style={buttonContainerStyle}>
               <button
                 style={buttonStyle}
-                onClick={() => navigate(`/update-jogador/${jogador.id}`)}
+                onClick={() => navigate(`/update-torcedor/${torcedor.id}`)}
               >
                 Atualizar
               </button>
               <button
                 style={{ ...buttonStyle, backgroundColor: 'red', color: 'white' }}
-                onClick={() => handleDelete(jogador.id)}
+                onClick={() => handleDelete(torcedor.id)}
               >
                 Deletar
               </button>
@@ -56,11 +54,8 @@ const ManageJogadores = () => {
           </div>
         ))}
       </div>
-      <button
-        style={createButtonStyle}
-        onClick={() => navigate('/create-jogador')}
-      >
-        Criar Novo Jogador
+      <button style={createButtonStyle} onClick={() => navigate('/create-torcedor')}>
+        Criar Novo Torcedor
       </button>
     </div>
   );
@@ -131,4 +126,4 @@ const createButtonStyle = {
   cursor: 'pointer',
 };
 
-export default ManageJogadores;
+export default ManageTorcedores;

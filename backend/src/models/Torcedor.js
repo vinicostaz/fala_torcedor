@@ -1,61 +1,59 @@
 import conectaNaDatabase from '../config/dbConnect.js';
 
-class Jogador {
-    static async criar({ nome, posicao, time, numero, foto_url }) {
+class Torcedor {
+    static async criar({ nome, time, foto_url, data_nascimento }) {
         const query = `
-            INSERT INTO jogadores (nome, posicao, time, numero, foto_url) 
-            VALUES ($1, $2, $3, $4, $5) 
+            INSERT INTO torcedores (nome, time, foto_url, data_nascimento) 
+            VALUES ($1, $2, $3, $4) 
             RETURNING *`;
-        const values = [nome, posicao, time, numero, foto_url];
-        
+        const values = [nome, time, foto_url, data_nascimento];
+
         try {
             const result = await conectaNaDatabase.query(query, values);
             return result.rows[0];
         } catch (error) {
-            console.error("Erro ao criar jogador:", error);
+            console.error("Erro ao criar torcedor:", error);
             throw error;
         }
     }
 
     static async buscarTodosComTime() {
         const query = `
-            SELECT jogadores.*, times.id AS time_id, times.nome AS time_nome, 
-                   times.divisao AS time_divisao, times.titulos_superbowl AS time_titulos_superbowl, 
-                   times.foto_url AS time_foto_url
-            FROM jogadores
-            LEFT JOIN times ON jogadores.time = times.nome
-            ORDER BY jogadores.id ASC`;
+            SELECT torcedores.*, times.id AS time_id, times.nome AS time_nome, 
+                   times.serie AS time_serie, times.foto_url AS time_foto_url, times.data_fundacao
+            FROM torcedores
+            LEFT JOIN times ON torcedores.time = times.nome
+            ORDER BY torcedores.id ASC`;
 
         try {
             const result = await conectaNaDatabase.query(query);
             return result.rows.map(row => ({
                 id: row.id,
                 nome: row.nome,
-                posicao: row.posicao,
-                numero: row.numero,
                 foto_url: row.foto_url,
+                data_nascimento: row.data_nascimento,
                 time: {
                     id: row.time_id,
                     nome: row.time_nome,
-                    divisao: row.time_divisao,
-                    titulos_superbowl: row.time_titulos_superbowl,
-                    foto_url: row.time_foto_url
+                    serie: row.time_serie,
+                    foto_url: row.time_foto_url,
+                    data_fundacao: row.data_fundacao,
                 }
             }));
         } catch (error) {
-            console.error("Erro ao buscar jogadores com informações do time:", error);
+            console.error("Erro ao buscar torcedores com informações do time:", error);
             throw error;
         }
     }
 
     static async buscarPorIdComTime(id) {
         const query = `
-            SELECT jogadores.*, times.id AS time_id, times.nome AS time_nome, 
-                   times.divisao AS time_divisao, times.titulos_superbowl AS time_titulos_superbowl, 
-                   times.foto_url AS time_foto_url
-            FROM jogadores
-            LEFT JOIN times ON jogadores.time = times.nome
-            WHERE jogadores.id = $1`;
+            SELECT torcedores.*, times.id AS time_id, times.nome AS time_nome, 
+                   times.serie AS time_serie, times.foto_url AS time_foto_url, times.data_fundacao
+            FROM torcedores
+            LEFT JOIN times ON torcedores.time = times.nome
+            WHERE torcedores.id = $1`;
+
         try {
             const result = await conectaNaDatabase.query(query, [id]);
 
@@ -63,24 +61,23 @@ class Jogador {
                 return null;
             }
 
-            const jogador = result.rows[0];
+            const torcedor = result.rows[0];
 
             return {
-                id: jogador.id,
-                nome: jogador.nome,
-                posicao: jogador.posicao,
-                numero: jogador.numero,
-                foto_url: jogador.foto_url,
+                id: torcedor.id,
+                nome: torcedor.nome,
+                foto_url: torcedor.foto_url,
+                data_nascimento: torcedor.data_nascimento, // Formatação no controlador
                 time: {
-                    id: jogador.time_id,
-                    nome: jogador.time_nome,
-                    divisao: jogador.time_divisao,
-                    titulos_superbowl: jogador.time_titulos_superbowl,
-                    foto_url: jogador.time_foto_url
+                    id: torcedor.time_id,
+                    nome: torcedor.time_nome,
+                    serie: torcedor.time_serie,
+                    foto_url: torcedor.time_foto_url,
+                    data_fundacao: torcedor.data_fundacao,
                 }
             };
         } catch (error) {
-            console.error("Erro ao buscar jogador com informações do time:", error);
+            console.error("Erro ao buscar torcedor com informações do time:", error);
             throw error;
         }
     }
@@ -97,40 +94,40 @@ class Jogador {
                 index++;
             }
         }
- 
+
         if (setClause.length === 0) {
             throw new Error("Nenhum campo para atualizar");
         }
 
         const query = `
-            UPDATE jogadores 
+            UPDATE torcedores 
             SET ${setClause.join(", ")} 
             WHERE id = $${index} 
             RETURNING *`;
-        
+
         values.push(id);
 
         try {
             const result = await conectaNaDatabase.query(query, values);
             return result.rows[0];
         } catch (error) {
-            console.error("Erro ao atualizar jogador:", error);
+            console.error("Erro ao atualizar torcedor:", error);
             throw error;
         }
     }
 
     static async deletar(id) {
-        const query = "DELETE FROM jogadores WHERE id = $1 RETURNING *";
+        const query = "DELETE FROM torcedores WHERE id = $1 RETURNING *";
         const values = [id];
-        
+
         try {
             const result = await conectaNaDatabase.query(query, values);
             return result.rows[0];
         } catch (error) {
-            console.error("Erro ao deletar jogador:", error);
+            console.error("Erro ao deletar torcedor:", error);
             throw error;
         }
     }
 }
 
-export default Jogador;
+export default Torcedor;

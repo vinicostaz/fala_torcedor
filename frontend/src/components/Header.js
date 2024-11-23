@@ -7,7 +7,7 @@ const Header = () => {
       <nav style={navStyle}>
         <Link to="/" style={linkStyle}>Home</Link>
         <Link to="/times" style={linkStyle}>Times</Link>
-        <Link to="/jogadores" style={linkStyle}>Jogadores</Link>
+        <Link to="/torcedores" style={linkStyle}>Torcedores</Link>
         <Link to="/login" style={adminIconContainerStyle}>
           <img
             src="https://cdn-icons-png.flaticon.com/512/78/78948.png"

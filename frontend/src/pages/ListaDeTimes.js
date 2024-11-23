@@ -14,7 +14,7 @@ const ListaTimes = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between' }}>
       <header style={{ textAlign: 'center', marginTop: '20px' }}>
-        <h1>Times da NFL</h1>
+        <h1>Times</h1>
       </header>
       <main style={{ flex: '1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div
@@ -25,7 +25,7 @@ const ListaTimes = () => {
             gap: '20px',
           }}
         >
-          {times.map((time, index) => (
+          {times.map((time) => (
             <Link
               to={`/time/${time.id}`}
               key={time.id}
@@ -35,7 +35,7 @@ const ListaTimes = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 color: 'black',
-                width: 'calc(25% - 20px)', // Cada coluna ocupa 25% do espaço com um pequeno espaçamento
+                width: 'calc(25% - 20px)',
                 maxWidth: '200px',
                 minWidth: '150px',
                 marginBottom: '20px',
@@ -44,7 +44,7 @@ const ListaTimes = () => {
               <div
                 style={{
                   width: '100%',
-                  aspectRatio: '1', // Garante que o quadrado é perfeitamente proporcional
+                  aspectRatio: '1',
                   borderRadius: '10px',
                   overflow: 'hidden',
                   border: '1px solid #ccc',

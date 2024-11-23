@@ -6,8 +6,8 @@ const UpdateTime = () => {
   const { id } = useParams();
   const [timeData, setTimeData] = useState({
     nome: '',
-    divisao: '',
-    titulos_superbowl: 0, // Inicializado como número
+    serie: '',
+    data_fundacao: '',
     foto_url: '',
   });
   const navigate = useNavigate();
@@ -19,8 +19,8 @@ const UpdateTime = () => {
         if (response.data) {
           setTimeData({
             nome: response.data.nome || '',
-            divisao: response.data.divisao || '',
-            titulos_superbowl: response.data.titulos_superbowl || 0,
+            serie: response.data.serie || '',
+            data_fundacao: formatDateForInput(response.data.data_fundacao),
             foto_url: response.data.foto_url || '',
           });
         } else {
@@ -35,17 +35,16 @@ const UpdateTime = () => {
     fetchTimeData();
   }, [id]);
 
+  const formatDateForInput = (dateString) => {
+
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const updatedData = {
-        nome: timeData.nome,
-        divisao: timeData.divisao,
-        titulos_superbowl: Number(timeData.titulos_superbowl), // Garante que seja um número
-        foto_url: timeData.foto_url,
-      };
-
-      await axios.put(`http://localhost:3000/times/${id}`, updatedData);
+      await axios.put(`http://localhost:3000/times/${id}`, timeData);
       alert('Time atualizado com sucesso.');
       navigate('/crud/time');
     } catch (error) {
@@ -56,36 +55,63 @@ const UpdateTime = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTimeData((prevData) => ({
-      ...prevData,
-      [name]: name === 'titulos_superbowl' ? parseInt(value, 10) || 0 : value, // Converte apenas titulos_superbowl para número
-    }));
+    setTimeData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   return (
     <div style={{ marginTop: '30px' }}>
-      <button
-        onClick={() => navigate(-1)}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate(-1)} style={backButtonStyle}>
         Voltar
       </button>
       <form onSubmit={handleUpdate} style={formStyle}>
         <h1>Atualizar Time</h1>
-        {['nome', 'divisao', 'titulos_superbowl', 'foto_url'].map((field) => (
-          <label key={field} style={labelStyle}>
-            {field === 'titulos_superbowl' ? 'Títulos de Super Bowl' : field.charAt(0).toUpperCase() + field.slice(1)}:
-            <input
-              type={field === 'titulos_superbowl' ? 'number' : 'text'}
-              name={field}
-              value={timeData[field] || ''}
-              onChange={handleChange}
-              style={inputStyle}
-              required
-            />
-          </label>
-        ))}
-        <button type="submit" style={buttonStyle}>Atualizar</button>
+        <label style={labelStyle}>
+          Nome:
+          <input
+            type="text"
+            name="nome"
+            value={timeData.nome}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Série:
+          <input
+            type="text"
+            name="serie"
+            value={timeData.serie}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Data de Fundação (Mês/Dia/Ano):
+          <input
+            type="date"
+            name="data_fundacao"
+            value={timeData.data_fundacao}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Foto URL:
+          <input
+            type="text"
+            name="foto_url"
+            value={timeData.foto_url}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <button type="submit" style={buttonStyle}>
+          Atualizar
+        </button>
       </form>
     </div>
   );

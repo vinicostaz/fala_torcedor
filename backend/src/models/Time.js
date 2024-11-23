@@ -1,12 +1,12 @@
 import conectaNaDatabase from '../config/dbConnect.js';
 
 class Time {
-    static async criar({ nome, divisao, titulos_superbowl, foto_url }) {
+    static async criar({ nome, foto_url, data_fundacao, serie }) {
         const query = `
-            INSERT INTO times (nome, divisao, titulos_superbowl, foto_url) 
+            INSERT INTO times (nome, foto_url, data_fundacao, serie) 
             VALUES ($1, $2, $3, $4) 
             RETURNING *`;
-        const values = [nome, divisao, titulos_superbowl, foto_url];
+        const values = [nome, foto_url, data_fundacao, serie];
 
         try {
             const result = await conectaNaDatabase.query(query, values);
@@ -17,15 +17,14 @@ class Time {
         }
     }
 
-    static async buscarTodosComJogadores() {
+    static async buscarTodosComTorcedores() {
         const query = `
-            SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
-                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero, 
-                   jogadores.foto_url AS jogador_foto_url
+            SELECT times.*, torcedores.id AS torcedor_id, torcedores.nome AS torcedor_nome,
+                   torcedores.foto_url AS torcedor_foto_url, torcedores.data_nascimento
             FROM times
-            LEFT JOIN jogadores ON times.nome = jogadores.time
-            ORDER BY times.id, jogadores.id`;
-    
+            LEFT JOIN torcedores ON times.nome = torcedores.time
+            ORDER BY times.id, torcedores.id`;
+
         try {
             const result = await conectaNaDatabase.query(query);
             const timesMap = {};
@@ -34,37 +33,35 @@ class Time {
                     timesMap[row.id] = {
                         id: row.id,
                         nome: row.nome,
-                        divisao: row.divisao,
-                        titulos_superbowl: row.titulos_superbowl,
+                        serie: row.serie,
                         foto_url: row.foto_url,
-                        jogadores: []
+                        data_fundacao: row.data_fundacao,
+                        torcedores: []
                     };
                 }
-    
-                if (row.jogador_id) {
-                    timesMap[row.id].jogadores.push({
-                        id: row.jogador_id,
-                        nome: row.jogador_nome,
-                        posicao: row.jogador_posicao,
-                        numero: row.jogador_numero,
-                        foto_url: row.jogador_foto_url
+
+                if (row.torcedor_id) {
+                    timesMap[row.id].torcedores.push({
+                        id: row.torcedor_id,
+                        nome: row.torcedor_nome,
+                        foto_url: row.torcedor_foto_url,
+                        data_nascimento: row.data_nascimento,
                     });
                 }
             });
             return Object.values(timesMap);
         } catch (error) {
-            console.error("Erro ao buscar times com jogadores:", error);
+            console.error("Erro ao buscar times com torcedores:", error);
             throw error;
         }
-    }    
+    }
 
-    static async buscarPorIdComJogadores(id) {
+    static async buscarPorIdComTorcedores(id) {
         const query = `
-            SELECT times.*, jogadores.id AS jogador_id, jogadores.nome AS jogador_nome, 
-                   jogadores.posicao AS jogador_posicao, jogadores.numero AS jogador_numero, 
-                   jogadores.foto_url AS jogador_foto_url
+            SELECT times.*, torcedores.id AS torcedor_id, torcedores.nome AS torcedor_nome, 
+                   torcedores.foto_url AS torcedor_foto_url, torcedores.data_nascimento
             FROM times
-            LEFT JOIN jogadores ON times.nome = jogadores.time
+            LEFT JOIN torcedores ON times.nome = torcedores.time
             WHERE times.id = $1`;
 
         try {
@@ -77,27 +74,26 @@ class Time {
             const time = {
                 id: result.rows[0].id,
                 nome: result.rows[0].nome,
-                divisao: result.rows[0].divisao,
-                titulos_superbowl: result.rows[0].titulos_superbowl,
+                serie: result.rows[0].serie,
                 foto_url: result.rows[0].foto_url,
-                jogadores: []
+                data_fundacao: result.rows[0].data_fundacao,
+                torcedores: []
             };
 
             result.rows.forEach(row => {
-                if (row.jogador_id) {
-                    time.jogadores.push({
-                        id: row.jogador_id,
-                        nome: row.jogador_nome,
-                        posicao: row.jogador_posicao,
-                        numero: row.jogador_numero,
-                        foto_url: row.jogador_foto_url
+                if (row.torcedor_id) {
+                    time.torcedores.push({
+                        id: row.torcedor_id,
+                        nome: row.torcedor_nome,
+                        foto_url: row.torcedor_foto_url,
+                        data_nascimento: row.data_nascimento,
                     });
                 }
             });
 
             return time;
         } catch (error) {
-            console.error("Erro ao buscar time com jogadores:", error);
+            console.error("Erro ao buscar time com torcedores:", error);
             throw error;
         }
     }
@@ -124,7 +120,7 @@ class Time {
             SET ${setClause.join(", ")} 
             WHERE id = $${index} 
             RETURNING *`;
-        
+
         values.push(id);
 
         try {

@@ -16,9 +16,9 @@ const AdminPanel = () => {
         </button>
         <button
           style={buttonStyle}
-          onClick={() => navigate('/crud/jogador')}
+          onClick={() => navigate('/crud/torcedor')}
         >
-          Gerenciar Jogadores
+          Gerenciar Torcedores
         </button>
       </div>
     </div>

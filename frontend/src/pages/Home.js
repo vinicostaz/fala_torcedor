@@ -7,15 +7,15 @@ const Home = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '80vh',
+        minHeight: '90vh',
         justifyContent: 'center',
         alignItems: 'center',
       }}
     >
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <img
-          src="https://www.thewebfactory.us/blogs/wp-content/uploads/2022/09/NFL-LOGO-2.jpg"
-          alt="Logo da NFL"
+          src="https://juniormedrado.com.br/wp-content/uploads/2023/02/Fala-toredor.jpeg"
+          alt="Logo da Torcida"
           style={{
             width: '550px',
             height: 'auto',
@@ -23,15 +23,15 @@ const Home = () => {
             marginBottom: '20px',
           }}
         />
-        <h1>Bem-vindo ao site de informações da NFL</h1>
-        <p>A liga esportiva profissional de futebol americano dos Estados Unidos</p>
+        <h1>Bem-vindo ao site do Fala Torcedor!</h1>
+        <p>A página de informações dos torcedores e seus times favoritos!</p>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
         <Link to="/times">
           <button style={buttonStyle}>Ver Times</button>
         </Link>
-        <Link to="/jogadores">
-          <button style={buttonStyle}>Ver Jogadores</button>
+        <Link to="/torcedores">
+          <button style={buttonStyle}>Ver Torcedores</button>
         </Link>
       </div>
     </div>

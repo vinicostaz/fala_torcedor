@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const CreateJogador = () => {
-  const [jogadorData, setJogadorData] = useState({
+const CreateTorcedor = () => {
+  const [torcedorData, setTorcedorData] = useState({
     nome: '',
-    posicao: '',
     time: '',
-    numero: '',
+    data_nascimento: '',
     foto_url: '',
   });
   const navigate = useNavigate();
@@ -15,47 +14,33 @@ const CreateJogador = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/jogadores', jogadorData);
-      alert('Jogador criado com sucesso.');
-      navigate('/crud/jogador');
+      await axios.post('http://localhost:3000/torcedores', torcedorData);
+      alert('Torcedor criado com sucesso.');
+      navigate('/crud/torcedor');
     } catch (error) {
-      console.error('Erro ao criar jogador:', error);
-      alert('Erro ao criar jogador.');
+      console.error('Erro ao criar torcedor:', error);
+      alert('Erro ao criar torcedor.');
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setJogadorData((prevData) => ({ ...prevData, [name]: value }));
+    setTorcedorData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   return (
     <div style={{ marginTop: '30px' }}>
-      <button
-        onClick={() => navigate(-1)}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate(-1)} style={backButtonStyle}>
         Voltar
       </button>
       <form onSubmit={handleCreate} style={formStyle}>
-        <h1>Criar Novo Jogador</h1>
+        <h1>Criar Novo Torcedor</h1>
         <label style={labelStyle}>
           Nome:
           <input
             type="text"
             name="nome"
-            value={jogadorData.nome}
-            onChange={handleChange}
-            style={inputStyle}
-            required
-          />
-        </label>
-        <label style={labelStyle}>
-          Posição:
-          <input
-            type="text"
-            name="posicao"
-            value={jogadorData.posicao}
+            value={torcedorData.nome}
             onChange={handleChange}
             style={inputStyle}
             required
@@ -66,18 +51,18 @@ const CreateJogador = () => {
           <input
             type="text"
             name="time"
-            value={jogadorData.time}
+            value={torcedorData.time}
             onChange={handleChange}
             style={inputStyle}
             required
           />
         </label>
         <label style={labelStyle}>
-          Número:
+          Data de Nascimento:
           <input
-            type="number"
-            name="numero"
-            value={jogadorData.numero}
+            type="date"
+            name="data_nascimento"
+            value={torcedorData.data_nascimento}
             onChange={handleChange}
             style={inputStyle}
             required
@@ -88,13 +73,15 @@ const CreateJogador = () => {
           <input
             type="text"
             name="foto_url"
-            value={jogadorData.foto_url}
+            value={torcedorData.foto_url}
             onChange={handleChange}
             style={inputStyle}
             required
           />
         </label>
-        <button type="submit" style={buttonStyle}>Criar</button>
+        <button type="submit" style={buttonStyle}>
+          Criar
+        </button>
       </form>
     </div>
   );
@@ -143,4 +130,4 @@ const backButtonStyle = {
   marginLeft: '20px',
 };
 
-export default CreateJogador;
+export default CreateTorcedor;

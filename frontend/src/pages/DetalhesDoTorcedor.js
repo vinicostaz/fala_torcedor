@@ -2,18 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const DetalhesDoJogador = () => {
+const DetalhesDoTorcedor = () => {
   const { id } = useParams();
-  const [jogador, setJogador] = useState(null);
+  const [torcedor, setTorcedor] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/jogadores/${id}`)
-      .then(response => setJogador(response.data))
-      .catch(error => console.error("Erro ao buscar detalhes do jogador:", error));
+    console.log(`Fetching torcedor with ID: ${id}`); // Depuração
+    axios.get(`http://localhost:3000/torcedores/${id}`)
+      .then(response => {
+        console.log('Torcedor recebido:', response.data); // Verifique os dados
+        setTorcedor(response.data);
+      })
+      .catch(error => {
+        console.error("Erro ao buscar detalhes do torcedor:", error);
+      });
   }, [id]);
 
-  if (!jogador) return <p style={{ textAlign: 'center', marginTop: '20px' }}>Carregando...</p>;
+  if (!torcedor) {
+    console.log('Nenhum torcedor encontrado ou carregando...');
+    return <p style={{ textAlign: 'center', marginTop: '20px' }}>Carregando...</p>;
+  }
+
+  console.log('Renderizando torcedor:', torcedor);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between', backgroundColor: '#fff' }}>
@@ -32,8 +43,8 @@ const DetalhesDoJogador = () => {
         Voltar
       </button>
       <main style={{ textAlign: 'center', flex: '1' }}>
-        <h1>{jogador.nome}</h1>
-        {jogador.foto_url && (
+        <h1>{torcedor.nome}</h1>
+        {torcedor.foto_url && (
           <div
             style={{
               width: '200px',
@@ -46,17 +57,16 @@ const DetalhesDoJogador = () => {
             }}
           >
             <img
-              src={jogador.foto_url}
-              alt={`Foto de ${jogador.nome}`}
+              src={torcedor.foto_url}
+              alt={`Foto de ${torcedor.nome}`}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>
         )}
-        <p>Posição: {jogador.posicao}</p>
-        <p>Número: {jogador.numero}</p>
-        <h2>Time</h2>
-        {jogador.time && (
-          <Link to={`/time/${jogador.time.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+        <p><strong>Data de Nascimento:</strong> {torcedor.data_nascimento}</p>
+        <h2>Time Favorito</h2>
+        {torcedor.time ? (
+          <Link to={`/time/${torcedor.time.id}`} style={{ textDecoration: 'none', color: 'black' }}>
             <div
               style={{
                 width: '150px',
@@ -74,17 +84,21 @@ const DetalhesDoJogador = () => {
               onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             >
               <img
-                src={jogador.time.foto_url}
-                alt={`Logo do time ${jogador.time.nome}`}
+                src={torcedor.time.foto_url}
+                alt={`Logo do time ${torcedor.time.nome}`}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </div>
-            <p style={{ marginTop: '10px', fontWeight: 'bold' }}>{jogador.time.nome}</p>
+            <p style={{ marginTop: '10px', fontWeight: 'bold' }}>{torcedor.time.nome}</p>
+            <p><strong>Série:</strong> {torcedor.time.serie}</p>
+            <p><strong>Data de Fundação:</strong> {torcedor.time.data_fundacao}</p>
           </Link>
+        ) : (
+          <p>Time não informado</p>
         )}
       </main>
     </div>
   );
 };
 
-export default DetalhesDoJogador;
+export default DetalhesDoTorcedor;

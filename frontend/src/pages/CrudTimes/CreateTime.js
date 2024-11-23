@@ -5,8 +5,8 @@ import axios from 'axios';
 const CreateTime = () => {
   const [timeData, setTimeData] = useState({
     nome: '',
-    divisao: '',
-    titulos_superbowl: '',
+    serie: '',
+    data_fundacao: '',
     foto_url: '',
   });
   const navigate = useNavigate();
@@ -30,28 +30,58 @@ const CreateTime = () => {
 
   return (
     <div style={{ marginTop: '30px' }}>
-      <button
-        onClick={() => navigate(-1)}
-        style={backButtonStyle}
-      >
+      <button onClick={() => navigate(-1)} style={backButtonStyle}>
         Voltar
       </button>
       <form onSubmit={handleCreate} style={formStyle}>
         <h1>Criar Novo Time</h1>
-        {['nome', 'divisao', 'titulos_superbowl', 'foto_url'].map((field) => (
-          <label key={field} style={labelStyle}>
-            {field === 'titulos_superbowl' ? 'Títulos de Super Bowl' : field.charAt(0).toUpperCase() + field.slice(1)}:
-            <input
-              type={field === 'titulos_superbowl' ? 'number' : 'text'}
-              name={field}
-              value={timeData[field]}
-              onChange={handleChange}
-              style={inputStyle}
-              required
-            />
-          </label>
-        ))}
-        <button type="submit" style={buttonStyle}>Criar</button>
+        <label style={labelStyle}>
+          Nome:
+          <input
+            type="text"
+            name="nome"
+            value={timeData.nome}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Série:
+          <input
+            type="text"
+            name="serie"
+            value={timeData.serie}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Data de Fundação:
+          <input
+            type="date"
+            name="data_fundacao"
+            value={timeData.data_fundacao}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <label style={labelStyle}>
+          Foto URL:
+          <input
+            type="text"
+            name="foto_url"
+            value={timeData.foto_url}
+            onChange={handleChange}
+            style={inputStyle}
+            required
+          />
+        </label>
+        <button type="submit" style={buttonStyle}>
+          Criar
+        </button>
       </form>
     </div>
   );
@@ -97,7 +127,7 @@ const backButtonStyle = {
   borderRadius: '5px',
   backgroundColor: '#f8f8f8',
   cursor: 'pointer',
-  marginLeft: '20px'
+  marginLeft: '20px',
 };
 
 export default CreateTime;

@@ -52,13 +52,13 @@ const DetalhesDoTime = () => {
             />
           </div>
         )}
-        <p>Divisão: {time.divisao}</p>
-        <p>Títulos de Super Bowl: {time.titulos_superbowl}</p>
-        <h2>Jogadores</h2>
+        <p>Série: {time.serie || 'N/A'}</p>
+        <p>Data de Fundação: {time.data_fundacao || 'N/A'}</p>
+        <h2>Torcedores</h2>
         <ul style={{ listStyleType: 'none', padding: 0, display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {time.jogadores && time.jogadores.map(jogador => (
-            <li key={jogador.id} style={{ margin: '10px', textAlign: 'center' }}>
-              <Link to={`/jogador/${jogador.id}`} style={{ textDecoration: 'none' }}>
+          {time.torcedores && time.torcedores.map((torcedor) => (
+            <li key={torcedor.id} style={{ margin: '10px', textAlign: 'center' }}>
+              <Link to={`/torcedores/${torcedor.id}`} style={{ textDecoration: 'none' }}>
                 <div
                   style={{
                     width: '150px',
@@ -73,8 +73,8 @@ const DetalhesDoTime = () => {
                   onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 >
                   <img
-                    src={jogador.foto_url}
-                    alt={`Foto do jogador ${jogador.nome}`}
+                    src={torcedor.foto_url}
+                    alt={`Foto do torcedor ${torcedor.nome}`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
