@@ -9,12 +9,15 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (username === 'admin' && password === 'admin') {
+      const token = JSON.stringify({ username, expiry: new Date().getTime() + 3600 * 1000 });
+      localStorage.setItem('authToken', token);
+      window.dispatchEvent(new Event('storage'));
       navigate('/admin');
     } else {
       alert('Nome de usuário ou senha incorretos!');
     }
   };
-
+  
   return (
     <div style={loginContainerStyle}>
       <h1 style={loginHeaderStyle}>Admin Login</h1>

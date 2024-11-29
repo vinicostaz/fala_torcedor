@@ -7,7 +7,7 @@ const CreateTime = () => {
     nome: '',
     serie: '',
     data_fundacao: '',
-    foto_url: '',
+    foto_url: 'https://cdn-icons-png.flaticon.com/512/8893/8893606.png',
   });
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ const CreateTime = () => {
           />
         </label>
         <label style={labelStyle}>
-          Data de Fundação:
+          Data de Fundação (Mês/Dia/Ano):
           <input
             type="date"
             name="data_fundacao"

@@ -1,20 +1,66 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  // Função para verificar se o usuário está autenticado
+  const checkAuth = () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      const { expiry } = JSON.parse(token);
+      if (new Date().getTime() < expiry) {
+        setIsLoggedIn(true);
+      } else {
+        localStorage.removeItem('authToken');
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  };
+
+  // Atualiza o estado ao carregar e quando o localStorage muda
+  useEffect(() => {
+    checkAuth();
+    window.addEventListener('storage', checkAuth); // Ouvindo mudanças no localStorage
+    return () => {
+      window.removeEventListener('storage', checkAuth); // Limpar ao desmontar
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
+
+  const dynamicAdminIconStyle = {
+    ...adminIconContainerStyle,
+    right: isLoggedIn ? '100px' : '20px',
+  };
+
   return (
     <header style={headerStyle}>
       <nav style={navStyle}>
         <Link to="/" style={linkStyle}>Home</Link>
         <Link to="/times" style={linkStyle}>Times</Link>
         <Link to="/torcedores" style={linkStyle}>Torcedores</Link>
-        <Link to="/login" style={adminIconContainerStyle}>
+
+        <Link to={isLoggedIn ? "/admin" : "/login"} style={dynamicAdminIconStyle}>
           <img
             src="https://cdn-icons-png.flaticon.com/512/78/78948.png"
             alt="Admin Icon"
             style={adminIconStyle}
           />
         </Link>
+
+        {isLoggedIn && (
+          <button onClick={handleLogout} style={logoutButtonStyle}>
+            Logout
+          </button>
+        )}
       </nav>
     </header>
   );
@@ -42,7 +88,6 @@ const linkStyle = {
 const adminIconContainerStyle = {
   position: 'absolute',
   top: '10px',
-  right: '20px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -56,6 +101,18 @@ const adminIconContainerStyle = {
 const adminIconStyle = {
   width: '25px',
   height: '25px',
+};
+
+const logoutButtonStyle = {
+  position: 'absolute',
+  top: '10px',
+  right: '20px',
+  backgroundColor: 'red',
+  color: '#fff',
+  border: 'none',
+  padding: '8px 12px',
+  borderRadius: '5px',
+  cursor: 'pointer',
 };
 
 export default Header;

@@ -6,26 +6,31 @@ const UpdateTorcedor = () => {
   const { id } = useParams();
   const [torcedorData, setTorcedorData] = useState({
     nome: '',
-    time: '', // Nome do time
+    time: '',
     data_nascimento: '',
     foto_url: '',
   });
+  const [times, setTimes] = useState([]); // Lista de times para o dropdown
   const navigate = useNavigate();
 
+  // Buscar dados do torcedor e lista de times
   useEffect(() => {
     const fetchTorcedorData = async () => {
       try {
         const torcedorResponse = await axios.get(`http://localhost:3000/torcedores/${id}`);
+        const timesResponse = await axios.get('http://localhost:3000/times'); // Endpoint para buscar os times
 
         setTorcedorData({
           nome: torcedorResponse.data.nome,
-          time: torcedorResponse.data.time?.nome || '', // Nome do time
+          time: torcedorResponse.data.time?.id || '', // Armazena o ID do time
           data_nascimento: formatDateForInput(torcedorResponse.data.data_nascimento),
           foto_url: torcedorResponse.data.foto_url,
         });
+
+        setTimes(timesResponse.data); // Armazena os times
       } catch (error) {
-        console.error('Erro ao buscar torcedor:', error);
-        alert('Erro ao carregar informações do torcedor.');
+        console.error('Erro ao buscar dados:', error);
+        alert('Erro ao carregar informações do torcedor ou times.');
       }
     };
 
@@ -33,17 +38,19 @@ const UpdateTorcedor = () => {
   }, [id]);
 
   const formatDateForInput = (dateString) => {
-    // Supondo que a data vem no formato DD/MM/YYYY
     const [day, month, year] = dateString.split('/');
-    return `${year}-${month}-${day}`; // Retorna no formato YYYY-MM-DD
+    return `${year}-${month}-${day}`;
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      // Enviar o nome do time no payload
+      const selectedTime = times.find((time) => time.id === parseInt(torcedorData.time));
+
       const payload = {
         ...torcedorData,
-        time: torcedorData.time.trim(), // Enviar o nome do time
+        time: selectedTime ? selectedTime.nome : '', // Enviar o nome do time
       };
 
       await axios.put(`http://localhost:3000/torcedores/${id}`, payload);
@@ -80,17 +87,23 @@ const UpdateTorcedor = () => {
         </label>
         <label style={labelStyle}>
           Time:
-          <input
-            type="text"
+          <select
             name="time"
             value={torcedorData.time}
             onChange={handleChange}
             style={inputStyle}
             required
-          />
+          >
+            <option value="">Selecione um time</option>
+            {times.map((time) => (
+              <option key={time.id} value={time.id}>
+                {time.nome}
+              </option>
+            ))}
+          </select>
         </label>
         <label style={labelStyle}>
-          Data de Nascimento (Mês/Dia/Ano):
+          Data de Nascimento:
           <input
             type="date"
             name="data_nascimento"

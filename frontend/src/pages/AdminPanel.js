@@ -20,6 +20,12 @@ const AdminPanel = () => {
         >
           Gerenciar Torcedores
         </button>
+        <button
+          style={buttonStyle}
+          onClick={() => navigate('/relatorios')}
+        >
+          Relatórios
+        </button>
       </div>
     </div>
   );

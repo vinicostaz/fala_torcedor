@@ -15,6 +15,8 @@ import UpdateTime from './pages/CrudTimes/UpdateTime';
 import ManageTorcedores from './pages/CrudJogadores/ManageTorcedores';
 import CreateTorcedor from './pages/CrudJogadores/CreateTorcedor';
 import UpdateTorcedor from './pages/CrudJogadores/UpdateTorcedor';
+import ProtectedRoute from './components/ProtectedRoute';
+import Relatorios from './pages/Relatorios';
 
 const App = () => {
   return (
@@ -29,17 +31,18 @@ const App = () => {
             <Route path="/time/:id" element={<DetalhesDoTime />} />
             <Route path="/torcedores/:id" element={<DetalhesDoTorcedor />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
             <Route path="/crud/time" element={<ManageTimes />} />
             <Route path="/create-time" element={<CreateTime />} />
             <Route path="/update-time/:id" element={<UpdateTime />} />
             <Route path="/crud/torcedor" element={<ManageTorcedores />} />
             <Route path="/create-torcedor" element={<CreateTorcedor />} />
             <Route path="/update-torcedor/:id" element={<UpdateTorcedor />} />
+            <Route path="/relatorios" element={<Relatorios />} />
           </Routes>
         </main>
         <Footer />
-      </div>
+      </div>  
     </Router>
   );
 };

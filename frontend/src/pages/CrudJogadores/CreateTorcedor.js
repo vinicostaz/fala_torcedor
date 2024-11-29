@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,14 +7,37 @@ const CreateTorcedor = () => {
     nome: '',
     time: '',
     data_nascimento: '',
-    foto_url: '',
+    foto_url: 'https://cdn-icons-png.freepik.com/512/10015/10015419.png',
   });
+  const [times, setTimes] = useState([]); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTimes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/times'); 
+        setTimes(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar times:', error);
+        alert('Erro ao carregar lista de times.');
+      }
+    };
+
+    fetchTimes();
+  }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/torcedores', torcedorData);
+
+      const selectedTime = times.find((time) => time.id === parseInt(torcedorData.time));
+
+      const payload = {
+        ...torcedorData,
+        time: selectedTime ? selectedTime.nome : '', 
+      };
+
+      await axios.post('http://localhost:3000/torcedores', payload);
       alert('Torcedor criado com sucesso.');
       navigate('/crud/torcedor');
     } catch (error) {
@@ -48,14 +71,20 @@ const CreateTorcedor = () => {
         </label>
         <label style={labelStyle}>
           Time:
-          <input
-            type="text"
+          <select
             name="time"
             value={torcedorData.time}
             onChange={handleChange}
             style={inputStyle}
             required
-          />
+          >
+            <option value="">Selecione um time</option>
+            {times.map((time) => (
+              <option key={time.id} value={time.id}>
+                {time.nome}
+              </option>
+            ))}
+          </select>
         </label>
         <label style={labelStyle}>
           Data de Nascimento:
