@@ -32,13 +32,13 @@ const App = () => {
             <Route path="/torcedores/:id" element={<DetalhesDoTorcedor />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
-            <Route path="/crud/time" element={<ManageTimes />} />
-            <Route path="/create-time" element={<CreateTime />} />
-            <Route path="/update-time/:id" element={<UpdateTime />} />
-            <Route path="/crud/torcedor" element={<ManageTorcedores />} />
-            <Route path="/create-torcedor" element={<CreateTorcedor />} />
-            <Route path="/update-torcedor/:id" element={<UpdateTorcedor />} />
-            <Route path="/relatorios" element={<Relatorios />} />
+            <Route path="/crud/time" element={<ProtectedRoute><ManageTimes /></ProtectedRoute>} />
+            <Route path="/create-time" element={<ProtectedRoute><CreateTime /></ProtectedRoute>} />
+            <Route path="/update-time/:id" element={<ProtectedRoute><UpdateTime /></ProtectedRoute>} />
+            <Route path="/crud/torcedor" element={<ProtectedRoute><ManageTorcedores /></ProtectedRoute>} />
+            <Route path="/create-torcedor" element={<ProtectedRoute><CreateTorcedor /></ProtectedRoute>} />
+            <Route path="/update-torcedor/:id" element={<ProtectedRoute><UpdateTorcedor /></ProtectedRoute>} />
+            <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
           </Routes>
         </main>
         <Footer />

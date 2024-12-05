@@ -8,10 +8,8 @@ const DetalhesDoTorcedor = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(`Fetching torcedor with ID: ${id}`); // Depuração
     axios.get(`http://localhost:3000/torcedores/${id}`)
       .then(response => {
-        console.log('Torcedor recebido:', response.data); // Verifique os dados
         setTorcedor(response.data);
       })
       .catch(error => {
@@ -20,11 +18,8 @@ const DetalhesDoTorcedor = () => {
   }, [id]);
 
   if (!torcedor) {
-    console.log('Nenhum torcedor encontrado ou carregando...');
     return <p style={{ textAlign: 'center', marginTop: '20px' }}>Carregando...</p>;
   }
-
-  console.log('Renderizando torcedor:', torcedor);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between', backgroundColor: '#fff' }}>

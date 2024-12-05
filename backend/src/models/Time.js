@@ -17,7 +17,7 @@ class Time {
         }
     }
 
-    static async buscarTodosComTorcedores() {
+    static async buscarTodos() {
         const query = `
             SELECT times.*, torcedores.id AS torcedor_id, torcedores.nome AS torcedor_nome,
                    torcedores.foto_url AS torcedor_foto_url, torcedores.data_nascimento
@@ -56,7 +56,7 @@ class Time {
         }
     }
 
-    static async buscarPorIdComTorcedores(id) {
+    static async buscarPorId(id) {
         const query = `
             SELECT times.*, torcedores.id AS torcedor_id, torcedores.nome AS torcedor_nome, 
                    torcedores.foto_url AS torcedor_foto_url, torcedores.data_nascimento

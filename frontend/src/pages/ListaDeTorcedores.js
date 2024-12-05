@@ -6,7 +6,7 @@ const ListaDeTorcedores = () => {
   const [torcedores, setTorcedores] = useState([]);
 
   useEffect(() => {
-    // Adicionar logs para depuração
+
     console.log("Buscando torcedores...");
     axios
       .get('http://localhost:3000/torcedores')
@@ -17,7 +17,7 @@ const ListaDeTorcedores = () => {
       .catch((error) => console.error("Erro ao buscar torcedores:", error));
   }, []);
 
-  // Verificar se a lista está vazia
+
   if (torcedores.length === 0) {
     return (
       <p style={{ textAlign: 'center', marginTop: '20px' }}>

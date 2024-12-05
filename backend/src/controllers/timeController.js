@@ -4,13 +4,18 @@ import { format } from 'date-fns';
 class TimeController {
     static async buscarTodos(req, res) {
         try {
-            const times = await Time.buscarTodosComTorcedores();
-
+            const times = await Time.buscarTodos();
             const formattedTimes = times.map((time) => ({
                 ...time,
                 data_fundacao: time.data_fundacao
                     ? format(new Date(time.data_fundacao), 'dd/MM/yyyy')
                     : null,
+                torcedores: time.torcedores.map(torcedor => ({
+                    ...torcedor,
+                    data_nascimento: torcedor.data_nascimento
+                        ? format(new Date(torcedor.data_nascimento), 'dd/MM/yyyy')
+                        : null,
+                }))
             }));
 
             res.status(200).json(formattedTimes);
@@ -19,10 +24,11 @@ class TimeController {
             res.status(500).json({ error: "Erro ao buscar times com torcedores." });
         }
     }
+    
 
     static async buscarPorId(req, res) {
         try {
-            const time = await Time.buscarPorIdComTorcedores(req.params.id);
+            const time = await Time.buscarPorId(req.params.id);
 
             if (!time) {
                 return res.status(404).json({ error: "Time não encontrado." });
@@ -31,13 +37,20 @@ class TimeController {
             time.data_fundacao = time.data_fundacao
                 ? format(new Date(time.data_fundacao), 'dd/MM/yyyy')
                 : null;
-
+    
+            time.torcedores = time.torcedores.map(torcedor => ({
+                ...torcedor,
+                data_nascimento: torcedor.data_nascimento
+                    ? format(new Date(torcedor.data_nascimento), 'dd/MM/yyyy')
+                    : null,
+            }));
+    
             res.status(200).json(time);
         } catch (error) {
             console.error("Erro ao buscar time:", error);
             res.status(500).json({ error: "Erro ao buscar time." });
         }
-    }
+    }    
 
     static async criar(req, res) {
         try {

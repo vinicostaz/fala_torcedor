@@ -87,7 +87,7 @@ const CreateTorcedor = () => {
           </select>
         </label>
         <label style={labelStyle}>
-          Data de Nascimento:
+          Data de Nascimento (Mês/Dia/Ano)
           <input
             type="date"
             name="data_nascimento"

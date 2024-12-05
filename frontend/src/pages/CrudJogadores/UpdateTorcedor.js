@@ -10,24 +10,24 @@ const UpdateTorcedor = () => {
     data_nascimento: '',
     foto_url: '',
   });
-  const [times, setTimes] = useState([]); // Lista de times para o dropdown
+  const [times, setTimes] = useState([]); 
   const navigate = useNavigate();
 
-  // Buscar dados do torcedor e lista de times
+  
   useEffect(() => {
     const fetchTorcedorData = async () => {
       try {
         const torcedorResponse = await axios.get(`http://localhost:3000/torcedores/${id}`);
-        const timesResponse = await axios.get('http://localhost:3000/times'); // Endpoint para buscar os times
+        const timesResponse = await axios.get('http://localhost:3000/times'); 
 
         setTorcedorData({
           nome: torcedorResponse.data.nome,
-          time: torcedorResponse.data.time?.id || '', // Armazena o ID do time
+          time: torcedorResponse.data.time?.id || '', 
           data_nascimento: formatDateForInput(torcedorResponse.data.data_nascimento),
           foto_url: torcedorResponse.data.foto_url,
         });
 
-        setTimes(timesResponse.data); // Armazena os times
+        setTimes(timesResponse.data); 
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
         alert('Erro ao carregar informações do torcedor ou times.');
@@ -45,12 +45,12 @@ const UpdateTorcedor = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      // Enviar o nome do time no payload
+      
       const selectedTime = times.find((time) => time.id === parseInt(torcedorData.time));
 
       const payload = {
         ...torcedorData,
-        time: selectedTime ? selectedTime.nome : '', // Enviar o nome do time
+        time: selectedTime ? selectedTime.nome : '', 
       };
 
       await axios.put(`http://localhost:3000/torcedores/${id}`, payload);

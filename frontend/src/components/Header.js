@@ -5,7 +5,7 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  // Função para verificar se o usuário está autenticado
+ 
   const checkAuth = () => {
     const token = localStorage.getItem('authToken');
     if (token) {
@@ -21,12 +21,12 @@ const Header = () => {
     }
   };
 
-  // Atualiza o estado ao carregar e quando o localStorage muda
+
   useEffect(() => {
     checkAuth();
-    window.addEventListener('storage', checkAuth); // Ouvindo mudanças no localStorage
+    window.addEventListener('storage', checkAuth); 
     return () => {
-      window.removeEventListener('storage', checkAuth); // Limpar ao desmontar
+      window.removeEventListener('storage', checkAuth); 
     };
   }, []);
 

@@ -48,14 +48,18 @@ const CreateTime = () => {
         </label>
         <label style={labelStyle}>
           Série:
-          <input
-            type="text"
+          <select
             name="serie"
             value={timeData.serie}
             onChange={handleChange}
             style={inputStyle}
             required
-          />
+          >
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
         </label>
         <label style={labelStyle}>
           Data de Fundação (Mês/Dia/Ano):

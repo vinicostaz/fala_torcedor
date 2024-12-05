@@ -17,7 +17,7 @@ class Torcedor {
         }
     }
 
-    static async buscarTodosComTime() {
+    static async buscarTodos() {
         const query = `
             SELECT torcedores.*, times.id AS time_id, times.nome AS time_nome, 
                    times.serie AS time_serie, times.foto_url AS time_foto_url, times.data_fundacao
@@ -46,7 +46,7 @@ class Torcedor {
         }
     }
 
-    static async buscarPorIdComTime(id) {
+    static async buscarPorId(id) {
         const query = `
             SELECT torcedores.*, times.id AS time_id, times.nome AS time_nome, 
                    times.serie AS time_serie, times.foto_url AS time_foto_url, times.data_fundacao
@@ -67,7 +67,7 @@ class Torcedor {
                 id: torcedor.id,
                 nome: torcedor.nome,
                 foto_url: torcedor.foto_url,
-                data_nascimento: torcedor.data_nascimento, // Formatação no controlador
+                data_nascimento: torcedor.data_nascimento,
                 time: {
                     id: torcedor.time_id,
                     nome: torcedor.time_nome,

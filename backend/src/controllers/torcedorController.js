@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 class TorcedorController {
     static async buscarTodos(req, res) {
         try {
-            const torcedores = await Torcedor.buscarTodosComTime();
+            const torcedores = await Torcedor.buscarTodos();
 
             const formattedTorcedores = torcedores.map(torcedor => ({
                 ...torcedor,
@@ -28,7 +28,7 @@ class TorcedorController {
 
     static async buscarPorId(req, res) {
         try {
-            const torcedor = await Torcedor.buscarPorIdComTime(req.params.id);
+            const torcedor = await Torcedor.buscarPorId(req.params.id);
             if (!torcedor) {
                 return res.status(404).json({ error: "Torcedor não encontrado." });
             }

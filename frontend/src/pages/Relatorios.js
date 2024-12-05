@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Relatorios = () => {
   const [timesPorSerie, setTimesPorSerie] = useState({});
   const [torcedoresPorSerie, setTorcedoresPorSerie] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRelatorios = async () => {
@@ -43,8 +45,10 @@ const Relatorios = () => {
 
   return (
     <div style={relatoriosContainerStyle}>
+      <button onClick={() => navigate('/admin')} style={backButtonStyle}>
+        Voltar para o Painel Administrativo
+      </button>
       <h1>Relatórios</h1>
-
       <section style={sectionStyle}>
         <h2>Times por Série</h2>
         {Object.keys(timesPorSerie).length === 0 ? (
@@ -95,6 +99,16 @@ const sectionStyle = {
 
 const serieContainerStyle = {
   marginBottom: '20px',
+};
+
+const backButtonStyle = {
+  padding: '10px 20px',
+  marginBottom: '20px',
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  backgroundColor: '#f8f8f8',
+  cursor: 'pointer',
+  alignSelf: 'flex-start',
 };
 
 export default Relatorios;
